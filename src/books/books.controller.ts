@@ -10,13 +10,16 @@ import {
   Patch,
   Post,
   Query,
+  UseGuards,
   ValidationPipe,
 } from '@nestjs/common';
 import { CreateBookDto } from './dto/create-book.dto';
 import { BooksService } from './books.service';
 import { UpdateBookDto } from './dto/update-book.dto';
+import { JwtGuard } from 'src/auth/guards/jwt.guard';
 
 @Controller('user/books')
+@UseGuards(JwtGuard)
 export class BooksController {
   constructor(private readonly booksService: BooksService) {}
 
