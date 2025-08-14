@@ -12,17 +12,17 @@ import {
   Query,
   ValidationPipe,
 } from '@nestjs/common';
-import { CreateBookDTO } from './dto/create-book.dto';
+import { CreateBookDto } from './dto/create-book.dto';
 import { BooksService } from './books.service';
-import { UpdateBookDTO } from './dto/update-book.dto';
+import { UpdateBookDto } from './dto/update-book.dto';
 
 @Controller('user/books')
 export class BooksController {
   constructor(private readonly booksService: BooksService) {}
 
   @Post()
-  create(@Body(ValidationPipe) createBookDTO: CreateBookDTO) {
-    return this.booksService.create(createBookDTO);
+  create(@Body(ValidationPipe) createBookDto: CreateBookDto) {
+    return this.booksService.create(createBookDto);
   }
 
   @Get()
@@ -35,9 +35,9 @@ export class BooksController {
   @Patch(':id')
   update(
     @Param('id', ParseIntPipe) id: number,
-    @Body(ValidationPipe) updateBookDTO: UpdateBookDTO,
+    @Body(ValidationPipe) updateBookDto: UpdateBookDto,
   ) {
-    return this.booksService.update(id, updateBookDTO);
+    return this.booksService.update(id, updateBookDto);
   }
 
   @Delete(':id')

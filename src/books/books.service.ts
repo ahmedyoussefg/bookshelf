@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateBookDTO } from './dto/create-book.dto';
+import { CreateBookDto } from './dto/create-book.dto';
 import { Genre } from './enums/genre.enum';
 import { ReadStatus } from './enums/read-status.enum';
-import { UpdateBookDTO } from './dto/update-book.dto';
+import { UpdateBookDto } from './dto/update-book.dto';
 
 @Injectable()
 export class BooksService {
@@ -63,21 +63,21 @@ export class BooksService {
     },
   ];
 
-  create(createBookDTO: CreateBookDTO) {
+  create(createBookDto: CreateBookDto) {
     const highestIdOfBook = [...this.books].sort((a, b) => b.id - a.id)[0].id;
     const newBook = {
       id: highestIdOfBook + 1,
-      ...createBookDTO,
+      ...createBookDto,
     };
     this.books.push(newBook);
 
     return newBook;
   }
 
-  update(id: number, updateBookDTO: UpdateBookDTO) {
+  update(id: number, updateBookDto: UpdateBookDto) {
     this.books = this.books.map((book) => {
       if (book.id === id) {
-        return { ...book, ...updateBookDTO };
+        return { ...book, ...updateBookDto };
       }
       return book;
     });
