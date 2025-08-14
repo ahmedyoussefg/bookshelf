@@ -1,8 +1,4 @@
-import {
-  ConflictException,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { DatabaseService } from 'src/database/database.service';
 import { AuthPayloadDto } from './dto/auth-payload.dto';
 import bcrypt from 'bcrypt';
@@ -25,7 +21,7 @@ export class AuthService {
     });
 
     if (!matchingUser) {
-      throw new UnauthorizedException('Invalid Credentials');
+      return null;
     }
 
     const passwordMatch = await bcrypt.compare(
@@ -34,7 +30,7 @@ export class AuthService {
     );
 
     if (!passwordMatch) {
-      throw new UnauthorizedException('Invalid Credentials');
+      return null;
     }
     const token = await this.generateToken(matchingUser.id);
 
