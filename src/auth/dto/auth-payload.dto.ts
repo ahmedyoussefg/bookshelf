@@ -7,6 +7,7 @@ export class AuthPayloadDto {
   username: string;
 
   @IsString()
+  @MinLength(8, { message: 'Password must be at least 8 characters long' })
   @Matches(/[A-Z]/, {
     message: 'Password must contain at least one uppercase letter',
   })
