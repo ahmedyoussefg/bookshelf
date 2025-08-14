@@ -2,7 +2,7 @@ import { IsBoolean, IsEnum, IsNotEmpty, IsString } from 'class-validator';
 import { Genre } from '../enums/genre.enum';
 import { ReadStatus } from '../enums/read-status.enum';
 
-export class CreateBookDTO {
+export class CreateBookDto {
   @IsString()
   @IsNotEmpty()
   title: string;
