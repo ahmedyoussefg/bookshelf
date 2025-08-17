@@ -1,4 +1,6 @@
 {
+  "exclude": ["prisma/**/*"],
+  "include": ["./src/**/*"],
   "compilerOptions": {
     "module": "nodenext",
     "moduleResolution": "nodenext",

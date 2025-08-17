@@ -32,6 +32,9 @@ export class BooksService {
     }
     const userBooks = await this.databaseService.book.findMany({
       where: whereClause,
+      omit: {
+        userId: true,
+      },
     });
     return userBooks;
   }
