@@ -1,105 +1,66 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateBookDto } from './dto/create-book.dto';
-import { Genre } from './enums/genre.enum';
-import { ReadStatus } from './enums/read-status.enum';
 import { UpdateBookDto } from './dto/update-book.dto';
+import { DatabaseService } from 'src/database/database.service';
+import { Prisma } from 'src/generated/prisma';
 
 @Injectable()
 export class BooksService {
-  private books = [
-    {
-      id: 1,
-      title: 'Romeo & Juliet',
-      author: 'William Shakespear',
-      genre: Genre.ROMANCE,
-      owned: true,
-      starred: false,
-      readStatus: ReadStatus.FINISHED,
-    },
-    {
-      id: 2,
-      title: 'The Hobbit',
-      author: 'J.R.R. Tolkien',
-      genre: Genre.FANTASY,
-      owned: false,
-      starred: true,
-      readStatus: ReadStatus.WANT_TO_READ,
-    },
-    {
-      id: 3,
-      title: '1984',
-      author: 'George Orwell',
-      genre: Genre.HISTORY,
-      owned: true,
-      starred: false,
-      readStatus: ReadStatus.READING,
-    },
-    {
-      id: 4,
-      title: 'To Kill a Mockingbird',
-      author: 'Harper Lee',
-      genre: Genre.SCIENCE,
-      owned: true,
-      starred: true,
-      readStatus: ReadStatus.FINISHED,
-    },
-    {
-      id: 5,
-      title: 'The Martian',
-      author: 'Andy Weir',
-      genre: Genre.SCIENCE_FICTION,
-      owned: false,
-      starred: false,
-      readStatus: ReadStatus.FINISHED,
-    },
-    {
-      id: 6,
-      title: 'The Da Vinci Code',
-      author: 'Dan Brown',
-      genre: Genre.MYSTERY,
-      owned: true,
-      starred: true,
-      readStatus: ReadStatus.READING,
-    },
-  ];
+  constructor(private readonly databaseService: DatabaseService) {}
 
-  create(createBookDto: CreateBookDto) {
-    const highestIdOfBook = [...this.books].sort((a, b) => b.id - a.id)[0].id;
-    const newBook = {
-      id: highestIdOfBook + 1,
-      ...createBookDto,
-    };
-    this.books.push(newBook);
+  async create(createBookDto: CreateBookDto, userId: number) {
+    const newBook = await this.databaseService.book.create({
+      data: {
+        ...createBookDto,
+        userId: userId,
+      },
+      omit: {
+        userId: true,
+      },
+    });
 
     return newBook;
   }
 
-  update(id: number, updateBookDto: UpdateBookDto) {
-    this.books = this.books.map((book) => {
-      if (book.id === id) {
-        return { ...book, ...updateBookDto };
-      }
-      return book;
-    });
-
-    const updatedBook = this.books.find((book) => book.id === id);
-    if (!updatedBook) {
-      throw new NotFoundException({
-        message: "Book not found or you don't have permission to update it",
-      });
+  async findAll(userId: number, starred?: boolean) {
+    const whereClause: Prisma.BookWhereInput = {
+      userId: userId,
+    };
+    if (typeof starred === 'boolean') {
+      // if not undefined
+      whereClause.starred = starred;
     }
+    const userBooks = await this.databaseService.book.findMany({
+      where: whereClause,
+    });
+    return userBooks;
+  }
+
+  async update(bookId: number, updateBookDto: UpdateBookDto, userId: number) {
+    // Filter out undefined values - only include fields that are actually provided
+    const dataToUpdate = Object.fromEntries(
+      Object.entries(updateBookDto).filter(([, value]) => value !== undefined),
+    );
+
+    const updatedBook = await this.databaseService.book.update({
+      where: {
+        id: bookId,
+        userId: userId,
+      },
+      data: dataToUpdate,
+      omit: {
+        userId: true,
+      },
+    });
     return updatedBook;
   }
 
-  findAll(starred?: boolean) {
-    if (starred !== undefined) {
-      return this.books.filter((book) => book.starred === starred);
-    }
-    return this.books;
-  }
-
-  delete(id: number) {
-    this.books = this.books.filter((book) => book.id !== id);
-    // TODO: handle if book doesn't exist
+  async delete(bookId: number, userId: number) {
+    await this.databaseService.book.delete({
+      where: {
+        id: bookId,
+        userId: userId,
+      },
+    });
   }
 }

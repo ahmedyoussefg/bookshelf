@@ -1,6 +1,5 @@
 import { IsBoolean, IsEnum, IsNotEmpty, IsString } from 'class-validator';
-import { Genre } from '../enums/genre.enum';
-import { ReadStatus } from '../enums/read-status.enum';
+import { Genre, ReadStatus } from 'src/generated/prisma';
 
 export class CreateBookDto {
   @IsString()
