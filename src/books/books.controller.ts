@@ -19,13 +19,28 @@ import { BooksService } from './books.service';
 import { UpdateBookDto } from './dto/update-book.dto';
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
 import type { Request } from 'express';
+import {
+  ApiBadRequestResponse,
+  ApiBearerAuth,
+  ApiCreatedResponse,
+  ApiNoContentResponse,
+  ApiNotFoundResponse,
+  ApiOkResponse,
+  ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
 
 @Controller('user/books')
+@ApiBearerAuth()
 @UseGuards(JwtGuard)
+@ApiUnauthorizedResponse({ description: 'Unauthorized access' })
+@ApiBadRequestResponse({
+  description: 'When request has invalid parameter/request body',
+})
 export class BooksController {
   constructor(private readonly booksService: BooksService) {}
 
   @Post()
+  @ApiCreatedResponse({ description: 'Book Created' })
   async create(
     @Req() req: Request,
     @Body(ValidationPipe) createBookDto: CreateBookDto,
@@ -34,6 +49,7 @@ export class BooksController {
   }
 
   @Get()
+  @ApiOkResponse({ description: 'Found All Books of Current User' })
   async findAll(
     @Req() req: Request,
     @Query('starred', new ParseBoolPipe({ optional: true })) starred?: boolean,
@@ -42,6 +58,8 @@ export class BooksController {
   }
 
   @Patch(':id')
+  @ApiOkResponse({ description: 'Updated Book' })
+  @ApiNotFoundResponse({ description: 'No book with that ID' })
   async update(
     @Req() req: Request,
     @Param('id', ParseIntPipe) id: number,
@@ -52,6 +70,8 @@ export class BooksController {
 
   @Delete(':id')
   @HttpCode(204)
+  @ApiNoContentResponse({ description: 'Deleted the book with that ID' })
+  @ApiNotFoundResponse({ description: 'No book with that ID' })
   async delete(@Req() req: Request, @Param('id', ParseIntPipe) id: number) {
     return await this.booksService.delete(id, req.user!.id);
   }
