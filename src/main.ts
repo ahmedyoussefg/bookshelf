@@ -11,7 +11,7 @@ async function bootstrap() {
 
   app.useGlobalFilters(new AllExceptionsFilter(httpAdapterHost));
   app.useGlobalFilters(new UnauthorizedExceptionFilter());
-  app.useGlobalFilters(new PrismaClientExceptionFilter());
+  app.useGlobalFilters(new PrismaClientExceptionFilter(httpAdapterHost));
 
   app.setGlobalPrefix('api');
   await app.listen(process.env.PORT ?? 3000);

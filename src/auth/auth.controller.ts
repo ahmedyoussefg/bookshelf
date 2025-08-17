@@ -18,8 +18,8 @@ export class AuthController {
   @Post('login')
   @HttpCode(200)
   @UseGuards(LocalGuard)
-  login(@Req() req: Request) {
-    return req.user;
+  async login(@Req() req: Request) {
+    return { token: await this.authService.generateToken(req.user!.id) };
   }
 
   @Post('register')

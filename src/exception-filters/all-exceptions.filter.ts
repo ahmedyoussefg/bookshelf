@@ -49,6 +49,13 @@ export class AllExceptionsFilter implements ExceptionFilter {
     };
 
     Logger.error(`${httpStatus} ${message}`, 'AllExceptionsFilter');
+    if (
+      httpStatus === <number>HttpStatus.INTERNAL_SERVER_ERROR &&
+      exception instanceof Error &&
+      exception.stack
+    ) {
+      Logger.error(exception.stack, 'AllExceptionsFilter');
+    }
 
     httpAdapter.reply(ctx.getResponse(), responseBody, httpStatus);
   }

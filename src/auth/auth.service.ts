@@ -32,11 +32,8 @@ export class AuthService {
     if (!passwordMatch) {
       return null;
     }
-    const token = await this.generateToken(matchingUser.id);
 
-    return {
-      token: token,
-    };
+    return { id: matchingUser.id };
   }
 
   async createUser(newUser: AuthPayloadDto) {
@@ -62,7 +59,8 @@ export class AuthService {
       token,
     };
   }
-  private async generateToken(userId: number) {
+
+  async generateToken(userId: number) {
     return await this.jwtService.signAsync(
       {
         id: userId,
