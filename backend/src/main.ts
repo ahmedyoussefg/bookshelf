@@ -4,10 +4,11 @@ import { AllExceptionsFilter } from './exception-filters/all-exceptions.filter';
 import { UnauthorizedExceptionFilter } from './exception-filters/unauthorized-http-exception.filter';
 import { PrismaClientExceptionFilter } from './exception-filters/prisma-client-exception.filter';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { INestApplication } from '@nestjs/common';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-
+  const app: INestApplication = await NestFactory.create(AppModule);
+  app.enableCors({ origin: ['http://localhost:5173'] });
   const httpAdapterHost = app.get(HttpAdapterHost);
 
   app.useGlobalFilters(new AllExceptionsFilter(httpAdapterHost));
