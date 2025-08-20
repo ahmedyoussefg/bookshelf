@@ -4,6 +4,7 @@ import { useForm, type SubmitHandler } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { isAxiosError, type AxiosResponse } from "axios";
+import { useNavigate } from "react-router";
 
 const formSchema = z.object({
   username: z
@@ -27,6 +28,7 @@ interface Prop {
 }
 
 function AuthForm({ handleAuthSubmit, buttonLabel, isLoginForm }: Prop) {
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -78,8 +80,9 @@ function AuthForm({ handleAuthSubmit, buttonLabel, isLoginForm }: Prop) {
     try {
       const res = await handleAuthSubmit(username, password);
       clearErrors("root");
-      // redirect
       console.log("Submitted successfully: ", res);
+      // redirect
+      navigate("/dashboard");
     } catch (error: unknown) {
       console.log("Error: ", error);
       if (!isAxiosError(error)) {

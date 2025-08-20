@@ -1,8 +1,8 @@
-import PageLayout from "./PageLayout";
-import AuthForm from "./AuthForm";
+import PageLayout from "../components/PageLayout";
+import AuthForm from "../components/AuthForm";
 import { api } from "../api";
-import AuthSwitchLink from "./AuthSwitchLink";
-import WelcomeLogo from "./WelcomeLogo";
+import AuthSwitchLink from "../components/AuthSwitchLink";
+import WelcomeLogo from "../components/WelcomeLogo";
 
 function RegisterPage() {
   const handleSubmit = async (username: string, pwd: string) => {
