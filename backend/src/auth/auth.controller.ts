@@ -34,7 +34,10 @@ export class AuthController {
   @ApiUnauthorizedResponse({ description: 'Invalid User Credentials' })
   @UseGuards(LocalGuard)
   async login(@Req() req: Request) {
-    return { token: await this.authService.generateToken(req.user!.id) };
+    return {
+      token: await this.authService.generateToken(req.user!.id),
+      username: req.user!.username,
+    };
   }
 
   @Post('register')

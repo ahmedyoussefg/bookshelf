@@ -33,7 +33,7 @@ export class AuthService {
       return null;
     }
 
-    return { id: matchingUser.id };
+    return { id: matchingUser.id, username: matchingUser.username };
   }
 
   async createUser(newUser: AuthPayloadDto) {
@@ -57,6 +57,7 @@ export class AuthService {
     const token = await this.generateToken(registeredUser.id);
     return {
       token,
+      username: registeredUser.username,
     };
   }
 

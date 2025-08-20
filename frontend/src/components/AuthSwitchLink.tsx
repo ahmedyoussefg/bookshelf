@@ -1,3 +1,5 @@
+import { Link } from "react-router";
+
 interface Prop {
   isRegisterPage: boolean;
 }
@@ -8,12 +10,12 @@ function AuthSwitchLink({ isRegisterPage }: Prop) {
   return (
     <p className="text-sm text-center text-amber-700 mt-6">
       {haveAnAccount} have an account?{" "}
-      <a
+      <Link
+        to={`/${redirectLink}`}
         className="underline text-amber-900 hover:text-amber-700"
-        href={`/${redirectLink}`}
       >
         {otherPageName}
-      </a>
+      </Link>
     </p>
   );
 }
