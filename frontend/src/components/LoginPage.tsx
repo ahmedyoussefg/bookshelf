@@ -10,13 +10,18 @@ function LoginPage() {
       username: username,
       password: pwd,
     });
-    console.log("Logged in, ", res);
+    console.log("Logged in successfully: ", res);
+    return res;
   };
   return (
     <PageLayout>
       <div className="w-full max-w-md bg-white shadow-lg rounded-2xl p-8">
         <WelcomeLogo />
-        <AuthForm handleAuthSubmit={handleSubmit} buttonLabel="Log In" />
+        <AuthForm
+          handleAuthSubmit={handleSubmit}
+          buttonLabel="Log In"
+          isLoginForm={true}
+        />
         <AuthSwitchLink isRegisterPage={false}></AuthSwitchLink>
       </div>
     </PageLayout>
