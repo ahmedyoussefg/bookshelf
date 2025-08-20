@@ -10,13 +10,18 @@ function RegisterPage() {
       username: username,
       password: pwd,
     });
-    console.log("Registered, ", res);
+    console.log("Registered successfully: ", res);
+    return res;
   };
   return (
     <PageLayout>
       <div className="w-full max-w-md bg-white shadow-lg rounded-2xl p-8">
         <WelcomeLogo />
-        <AuthForm handleAuthSubmit={handleSubmit} buttonLabel="Register" />
+        <AuthForm
+          handleAuthSubmit={handleSubmit}
+          buttonLabel="Register"
+          isLoginForm={false}
+        />
         <AuthSwitchLink isRegisterPage={true}></AuthSwitchLink>
       </div>
     </PageLayout>
