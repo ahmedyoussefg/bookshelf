@@ -16,8 +16,8 @@ interface Auth {
 }
 
 interface AuthContextInterface {
-  auth: Auth;
-  setAuth: Dispatch<SetStateAction<Auth>>;
+  auth: Auth | undefined;
+  setAuth: Dispatch<SetStateAction<Auth | undefined>>;
   isAuthenticated: boolean;
 }
 
@@ -33,7 +33,7 @@ const AuthContext = createContext<AuthContextInterface>({
 });
 
 export const AuthProvider = ({ children }: Props) => {
-  const [auth, setAuth] = useState<Auth>(getInitialAuth());
+  const [auth, setAuth] = useState<Auth | undefined>(getInitialAuth());
   const isAuthenticated = !!(auth?.token && auth?.username);
   return (
     <AuthContext.Provider value={{ auth, setAuth, isAuthenticated }}>
