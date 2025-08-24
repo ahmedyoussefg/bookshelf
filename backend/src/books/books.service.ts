@@ -32,6 +32,9 @@ export class BooksService {
     }
     const userBooks = await this.databaseService.book.findMany({
       where: whereClause,
+      orderBy: {
+        createdAt: 'desc',
+      },
       omit: {
         userId: true,
       },
