@@ -89,11 +89,14 @@ function DashboardPage() {
             </div>
           </div>
         </div>
-        <BookList
-          books={books}
-          loading={loading}
-          onBookEdit={handleEditBookClick}
-        />
+        <BookListContext.Provider value={{ fetchBooks }}>
+          <BookList
+            books={books}
+            loading={loading}
+            onBookEdit={handleEditBookClick}
+          />
+        </BookListContext.Provider>
+
         {showBookModal && (
           <BookListContext.Provider value={{ fetchBooks }}>
             <BookModal

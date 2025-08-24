@@ -3,16 +3,16 @@ import { useState } from "react";
 
 interface Props {
   initialStarred: boolean | undefined;
-  onToggle: (value: boolean) => void;
+  onToggle: (value: boolean) => Promise<void> | void;
 }
 
 function StarButton({ initialStarred, onToggle }: Props) {
   const [starred, setStarred] = useState(initialStarred);
 
-  const handleClick = () => {
+  const handleClick = async () => {
     const newValue = !starred;
     setStarred(newValue);
-    onToggle(newValue); // notify parent
+    await Promise.resolve(onToggle(newValue)); // notify parent
   };
   return (
     <button
