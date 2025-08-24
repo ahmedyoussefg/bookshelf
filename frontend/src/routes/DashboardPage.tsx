@@ -2,11 +2,50 @@ import Header from "../components/Header";
 import useAuth from "../hooks/useAuth";
 import BookList from "../components/BookList";
 import Button from "../components/Button";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import BookModal from "../components/BookModal";
+import type Book from "../types/Book";
+import { api } from "../api";
+import { toast } from "react-toastify";
+import BookListContext from "../contexts/BookListProvider";
 
 function DashboardPage() {
   const { auth } = useAuth();
   const [showStarred, setShowStarred] = useState(false);
+  const [showBookModal, setShowBookModal] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [books, setBooks] = useState<Book[]>([]);
+
+  const fetchBooks = useCallback(async () => {
+    try {
+      setLoading(true);
+      const params = showStarred ? { starred: true } : {};
+      const res = await api.get("/user/books", { params });
+      setBooks(res.data);
+    } catch (error) {
+      toast.error(
+        (error as Error)?.message || "An error occured. Please try again.",
+        {
+          closeButton: true,
+          autoClose: 3000,
+        }
+      );
+    } finally {
+      setLoading(false);
+    }
+  }, [showStarred]);
+
+  useEffect(() => {
+    fetchBooks();
+  }, [fetchBooks]);
+  const handleAddBookClick = () => {
+    // Open the book modal for adding a new book
+    setShowBookModal(true);
+  };
+
+  const handleCloseBookModal = () => {
+    setShowBookModal(false);
+  };
 
   return (
     <div className="min-h-screen flex flex-col bg-amber-50">
@@ -30,14 +69,16 @@ function DashboardPage() {
             </label>
 
             <div className="w-32">
-              <Button onClick={() => console.log("Add new book")}>
-                + Add Book
-              </Button>
+              <Button onClick={handleAddBookClick}>+ Add Book</Button>
             </div>
           </div>
         </div>
-
-        <BookList />
+        <BookList books={books} loading={loading} />
+        {showBookModal && (
+          <BookListContext.Provider value={{ fetchBooks }}>
+            <BookModal isUpdateBook={false} onClose={handleCloseBookModal} />
+          </BookListContext.Provider>
+        )}
       </div>
     </div>
   );
