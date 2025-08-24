@@ -62,7 +62,7 @@ function BookModal({ isUpdateBook, onClose, book }: Props) {
     const toastId = toast.loading("Submitting...");
     try {
       if (isUpdateBook) {
-        await api.patch("/user/books", reqBody);
+        await api.patch(`/user/books/${book?.id}`, reqBody);
       } else {
         await api.post("/user/books", reqBody);
       }

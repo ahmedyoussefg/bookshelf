@@ -8,6 +8,8 @@ import type Book from "../types/Book";
 import { api } from "../api";
 import { toast } from "react-toastify";
 import BookListContext from "../contexts/BookListProvider";
+import Genre from "../types/Genre";
+import ReadStatus from "../types/ReadStatus";
 
 function DashboardPage() {
   const { auth } = useAuth();
@@ -15,13 +17,20 @@ function DashboardPage() {
   const [showBookModal, setShowBookModal] = useState(false);
   const [loading, setLoading] = useState(true);
   const [books, setBooks] = useState<Book[]>([]);
+  const [selectedBook, setSelectedBook] = useState<Book | undefined>(undefined);
 
   const fetchBooks = useCallback(async () => {
     try {
       setLoading(true);
       const params = showStarred ? { starred: true } : {};
       const res = await api.get("/user/books", { params });
-      setBooks(res.data);
+      // convert genre and readstatus to user friendly values
+      const normalizeBook = (book: Book): Book => ({
+        ...book,
+        genre: Genre[book.genre as keyof typeof Genre],
+        readStatus: ReadStatus[book.readStatus as keyof typeof ReadStatus],
+      });
+      setBooks(res.data.map(normalizeBook));
     } catch (error) {
       toast.error(
         (error as Error)?.message || "An error occured. Please try again.",
@@ -40,11 +49,18 @@ function DashboardPage() {
   }, [fetchBooks]);
   const handleAddBookClick = () => {
     // Open the book modal for adding a new book
+    setSelectedBook(undefined); // reset
     setShowBookModal(true);
   };
 
   const handleCloseBookModal = () => {
     setShowBookModal(false);
+    setSelectedBook(undefined); // reset
+  };
+
+  const handleEditBookClick = (book: Book) => {
+    setSelectedBook(book);
+    setShowBookModal(true);
   };
 
   return (
@@ -73,10 +89,18 @@ function DashboardPage() {
             </div>
           </div>
         </div>
-        <BookList books={books} loading={loading} />
+        <BookList
+          books={books}
+          loading={loading}
+          onBookEdit={handleEditBookClick}
+        />
         {showBookModal && (
           <BookListContext.Provider value={{ fetchBooks }}>
-            <BookModal isUpdateBook={false} onClose={handleCloseBookModal} />
+            <BookModal
+              isUpdateBook={!!selectedBook}
+              onClose={handleCloseBookModal}
+              {...(selectedBook ? { book: selectedBook } : {})}
+            />
           </BookListContext.Provider>
         )}
       </div>
