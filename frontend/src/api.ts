@@ -25,7 +25,9 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (res) => res,
   (error: AxiosError) => {
-    if (error.response?.status === 401) {
+    const isLoginRequest = error.config?.url?.startsWith("/auth/login");
+
+    if (error.response?.status === 401 && !isLoginRequest) {
       toast.error("Session expired. Logging out...", {
         isLoading: false,
         closeButton: true,
@@ -33,5 +35,6 @@ api.interceptors.response.use(
       });
       triggerLogout();
     }
+    return Promise.reject(error);
   }
 );
