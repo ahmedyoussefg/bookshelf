@@ -3,9 +3,10 @@ import type Book from "../types/Book";
 import StarButton from "./StarButton";
 interface Props {
   book: Book;
+  onBookEdit: (book: Book) => void;
 }
 
-function BookListItem({ book }: Props) {
+function BookListItem({ book, onBookEdit }: Props) {
   return (
     <div className="bg-white shadow-md rounded-xl border border-amber-200 p-4 flex flex-col justify-between">
       <div>
@@ -32,6 +33,9 @@ function BookListItem({ book }: Props) {
           <button
             className="text-blue-600 cursor-pointer hover:text-blue-800"
             title="Edit"
+            onClick={() => {
+              onBookEdit(book);
+            }}
           >
             <Edit className="h-5 w-5" />
           </button>

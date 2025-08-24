@@ -4,9 +4,10 @@ import { LoaderCircle, SearchX } from "lucide-react";
 
 interface Props {
   books: Book[];
+  onBookEdit: (book: Book) => void;
   loading?: boolean;
 }
-function BookList({ books, loading = false }: Props) {
+function BookList({ books, onBookEdit, loading = false }: Props) {
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center py-12 text-amber-700">
@@ -29,7 +30,7 @@ function BookList({ books, loading = false }: Props) {
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
       {books.map((book) => (
-        <BookListItem key={book.id} book={book} />
+        <BookListItem key={book.id} book={book} onBookEdit={onBookEdit}/>
       ))}
     </div>
   );
