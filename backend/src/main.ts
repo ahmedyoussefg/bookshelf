@@ -10,6 +10,7 @@ async function bootstrap() {
   const app: INestApplication = await NestFactory.create(AppModule);
   app.enableCors({
     origin: ['http://localhost:5173', 'https://bookshelf-proj.vercel.app'],
+    credentials: true,
   });
   const httpAdapterHost = app.get(HttpAdapterHost);
 
