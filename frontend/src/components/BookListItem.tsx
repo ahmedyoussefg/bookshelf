@@ -1,15 +1,8 @@
-import { Star, Edit, Trash } from "lucide-react";
-
+import { Edit, Trash } from "lucide-react";
+import type Book from "../types/Book";
+import StarButton from "./StarButton";
 interface Props {
-  book: {
-    id: number;
-    title: string;
-    author: string;
-    genre: string;
-    owned: boolean;
-    readStatus: string;
-    starred: boolean;
-  };
+  book: Book;
 }
 
 function BookListItem({ book }: Props) {
@@ -28,17 +21,13 @@ function BookListItem({ book }: Props) {
       </div>
 
       <div className="flex justify-between items-center mt-4">
-        <button
-          className="text-amber-600 cursor-pointer hover:text-amber-800"
-          title={book.starred ? "Unstar" : "Star"}
-        >
-          {book.starred ? (
-            <Star className="h-5 w-5 fill-amber-600" />
-          ) : (
-            <Star className="h-5 w-5 fill-white stroke-amber-600" />
-          )}
-        </button>
-
+        <StarButton
+          initialStarred={book.starred}
+          onToggle={(value) => {
+            // TODO: update starred
+            console.log(value);
+          }}
+        />
         <div className="flex gap-2">
           <button
             className="text-blue-600 cursor-pointer hover:text-blue-800"
